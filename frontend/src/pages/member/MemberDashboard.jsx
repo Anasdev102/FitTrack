@@ -1,5 +1,6 @@
+import React from 'react';
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CalendarCheck, CreditCard, Dumbbell, UserRound } from "lucide-react";
 import Badge from "../../components/common/Badge";
@@ -10,6 +11,7 @@ import { formatCurrency } from "../../utils/formatCurrency";
 
 export default function MemberDashboard() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { data, loading, error } = useSelector((state) => state.dashboard);
   const { user } = useSelector((state) => state.auth);
   const apiSubscription = data?.subscription;
@@ -22,8 +24,18 @@ export default function MemberDashboard() {
   const subscriptionStatus = apiSubscription?.status || "none";
   const attendanceData = data?.attendances || [];
   const paymentData = data?.payments || [];
+  const assignedCoach = data?.assigned_coach;
+  const trainingPlans = data?.training_plans || [];
 
   useEffect(() => { dispatch(fetchMemberDashboard()); }, [dispatch]);
+
+  useEffect(() => {
+    if (location.search === "?section=coach") {
+      requestAnimationFrame(() => {
+        document.getElementById("my-coach")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, [location.search, data]);
 
   return (
     <div className="page-enter grid gap-7">
@@ -58,11 +70,68 @@ export default function MemberDashboard() {
         <StatCard icon={CreditCard} label="Payment" value={apiSubscription?.payment_status || "unpaid"} />
         <StatCard icon={CalendarCheck} label="Visits" value={attendanceData.length} />
       </div>
+      <MyCoachSection coach={assignedCoach} trainingPlans={trainingPlans} />
       <div className="grid gap-6 xl:grid-cols-2">
         <Table columns={[{ key: "date", label: "Recent attendance" }, { key: "time", label: "Check in" }, { key: "status", label: "Status", render: () => <Badge tone="green">Present</Badge> }]} rows={attendanceData} />
         <Table columns={[{ key: "payment_date", label: "Recent payments" }, { key: "amount", label: "Amount", render: (row) => formatCurrency(row.amount) }, { key: "status", label: "Status", render: (row) => <Badge tone={row.status === "unpaid" ? "orange" : "green"}>{row.status}</Badge> }]} rows={paymentData} />
       </div>
     </div>
+  );
+}
+
+function MyCoachSection({ coach, trainingPlans }) {
+  const coachName = coach?.name || coach?.user?.name;
+  const coachImage = coach?.image || coach?.user?.image || "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80";
+  const activePlans = trainingPlans.filter((plan) => plan.status === "active");
+
+  return (
+    <section id="my-coach" className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+      <div className="panel overflow-hidden p-0">
+        {coach ? (
+          <div className="grid md:grid-cols-[11rem_1fr]">
+            <img className="h-56 w-full object-cover md:h-full" src={coachImage} alt={coachName || "Assigned coach"} />
+            <div className="p-6">
+              <p className="section-kicker">My Coach</p>
+              <h2 className="mt-3 text-2xl font-black">{coachName}</h2>
+              <p className="mt-1 text-sm font-bold text-primary">{coach.speciality || "Fitness Coach"}</p>
+              {coach.bio && <p className="mt-4 text-sm leading-7 text-muted">{coach.bio}</p>}
+              <div className="mt-5 grid gap-3 text-sm font-semibold text-muted">
+                {coach.phone && <p>Phone: <span className="text-ink">{coach.phone}</span></p>}
+                {coach.user?.email && <p>Email: <span className="text-ink">{coach.user.email}</span></p>}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-6">
+            <p className="section-kicker">My Coach</p>
+            <h2 className="mt-3 text-2xl font-black">No coach assigned yet</h2>
+            <p className="mt-3 text-sm leading-7 text-muted">The gym admin has not assigned an approved coach to your account yet. Once assigned, your coach details and plans will appear here.</p>
+          </div>
+        )}
+      </div>
+
+      <div className="panel p-6">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <div>
+            <p className="section-kicker">Training plans</p>
+            <h2 className="mt-2 text-xl font-black">Coach programs</h2>
+          </div>
+          <Badge tone={activePlans.length ? "green" : "orange"}>{activePlans.length} active</Badge>
+        </div>
+        <div className="grid gap-3">
+          {trainingPlans.slice(0, 3).map((plan) => (
+            <div className="rounded border border-line p-4" key={plan.id}>
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-black">{plan.title}</h3>
+                <Badge tone={plan.status === "active" ? "green" : "orange"}>{plan.status}</Badge>
+              </div>
+              {plan.description && <p className="mt-2 text-sm leading-6 text-muted">{plan.description}</p>}
+            </div>
+          ))}
+          {!trainingPlans.length && <p className="rounded border border-dashed border-line p-5 text-sm font-semibold text-muted">No training plans yet.</p>}
+        </div>
+      </div>
+    </section>
   );
 }
 

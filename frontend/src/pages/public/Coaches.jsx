@@ -1,3 +1,4 @@
+import React from 'react';
 export default function Coaches() {
   const coaches = [
     ["John Smith", "Strength Coach", "https://images.unsplash.com/photo-1584466977773-e625c37cdd50?auto=format&fit=crop&w=500&q=80"],

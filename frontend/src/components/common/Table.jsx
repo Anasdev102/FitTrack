@@ -1,3 +1,4 @@
+import React from 'react';
 export default function Table({ columns, rows }) {
   return (
     <div className="panel overflow-x-auto">

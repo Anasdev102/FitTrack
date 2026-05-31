@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useMemo, useState } from "react";
 import ResourcePage from "./ResourcePage";
 import { coachesApi } from "../../api/coachesApi";

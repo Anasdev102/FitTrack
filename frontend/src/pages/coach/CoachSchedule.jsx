@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useMemo, useState } from "react";
 import Badge from "../../components/common/Badge";
 import Table from "../../components/common/Table";

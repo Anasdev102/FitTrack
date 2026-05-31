@@ -1,3 +1,4 @@
+import React from 'react';
 export default function Badge({ children, tone = 'orange' }) {
   const tones = {
     green: 'bg-green-100 text-green-800',

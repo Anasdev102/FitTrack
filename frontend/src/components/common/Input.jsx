@@ -1,3 +1,4 @@
+import React from 'react';
 export default function Input({ label, className = '', ...props }) {
   return (
     <label className="grid gap-2 text-xs font-bold text-slate-700">

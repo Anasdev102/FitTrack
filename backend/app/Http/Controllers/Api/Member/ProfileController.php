@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Member;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AttendanceResource;
+use App\Http\Resources\CoachResource;
 use App\Http\Resources\PaymentResource;
 use App\Http\Resources\SubscriptionResource;
 use App\Http\Resources\TrainingPlanResource;
@@ -26,16 +27,18 @@ class ProfileController extends Controller
             ->latest()
             ->first();
 
+        $assignedCoach = CoachAssignment::with('coach.user')
+            ->where('member_id', $user->id)
+            ->where('status', 'approved')
+            ->latest('approved_at')
+            ->first()?->coach;
+
         return response()->json([
             'user' => new UserResource($user->load('activeSubscription')),
             'subscription' => $subscription ? new SubscriptionResource($subscription) : null,
             'payments' => PaymentResource::collection($user->payments()->latest()->limit(5)->get()),
             'attendances' => AttendanceResource::collection($user->attendances()->latest()->limit(5)->get()),
-            'assigned_coach' => CoachAssignment::with('coach.user')
-                ->where('member_id', $user->id)
-                ->where('status', 'approved')
-                ->latest('approved_at')
-                ->first()?->coach,
+            'assigned_coach' => $assignedCoach ? new CoachResource($assignedCoach) : null,
             'training_plans' => TrainingPlanResource::collection($user->hasMany(TrainingPlan::class, 'member_id')->latest()->get()),
         ]);
     }

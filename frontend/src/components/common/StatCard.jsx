@@ -1,3 +1,4 @@
+import React from 'react';
 export default function StatCard({ icon: Icon, label, value }) {
   return (
     <div className="metric-card rounded-lg p-6 transition hover:-translate-y-1 hover:border-primary/30">

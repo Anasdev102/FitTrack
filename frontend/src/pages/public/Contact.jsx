@@ -1,3 +1,4 @@
+import React from 'react';
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";

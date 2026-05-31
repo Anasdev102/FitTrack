@@ -1,3 +1,4 @@
+import React from 'react';
 import ResourcePage from "./ResourcePage";
 import { createCoach, deleteCoach, fetchCoaches, updateCoach } from "../../store/slices/coachesSlice";
 import { formatCurrency } from "../../utils/formatCurrency";

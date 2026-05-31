@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { Menu, Search, X } from 'lucide-react';
 import Sidebar from './Sidebar';

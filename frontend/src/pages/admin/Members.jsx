@@ -1,3 +1,4 @@
+import React from 'react';
 import Badge from "../../components/common/Badge";
 import ResourcePage from "./ResourcePage";
 import { createMember, deleteMember, fetchMembers, updateMember } from "../../store/slices/membersSlice";
