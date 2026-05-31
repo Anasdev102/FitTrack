@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  color: #111111;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.panel {
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 8px;
+  box-shadow: 0 18px 46px rgba(17, 17, 17, 0.065);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.panel:hover {
+  border-color: rgba(243, 97, 0, 0.28);
+  box-shadow: 0 26px 70px rgba(17, 17, 17, 0.1);
+}
+
+.glass-panel {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(2, 6, 23, 0.26);
+  backdrop-filter: blur(22px);
+}
+
+.hero-image {
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.74) 48%, rgba(0, 0, 0, 0.32) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.86)),
+    url("https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=2400&q=90");
+  background-position: center;
+  background-size: cover;
+}
+
+.dark-card {
+  background-image:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.94), rgba(17, 17, 17, 0.78)),
+    url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85");
+  background-position: center;
+  background-size: cover;
+}
+
+.app-surface {
+  background:
+    linear-gradient(180deg, rgba(243, 97, 0, 0.045), transparent 18rem),
+    #f5f5f5;
+}
+
+.metric-card {
+  background:
+    linear-gradient(135deg, #ffffff, #fbfbfc);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: 0 18px 42px rgba(17, 17, 17, 0.07);
+}
+
+.premium-input {
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.03);
+}
+
+.section-kicker {
+  color: #f36100;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.fitness-title {
+  font-weight: 950;
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.fitness-section-dark {
+  background: #151515;
+  color: #ffffff;
+}
+
+.image-zoom {
+  overflow: hidden;
+}
+
+.image-zoom img {
+  transition: transform 700ms ease, filter 700ms ease;
+}
+
+.image-zoom:hover img {
+  transform: scale(1.08);
+  filter: contrast(1.05) saturate(1.08);
+}
+
+.dashboard-hero {
+  background-image:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.94), rgba(17, 17, 17, 0.78)),
+    url("https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1600&q=86");
+  background-position: center;
+  background-size: cover;
+  border-radius: 8px;
+}
+
+.fitness-parallax {
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.42)),
+    url("https://images.unsplash.com/photo-1517964603305-11c0f6f66012?auto=format&fit=crop&w=2200&q=88");
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+
+@media (max-width: 768px) {
+  .fitness-parallax {
+    background-attachment: scroll;
+  }
+}
+
+.page-enter {
+  animation: page-enter 520ms ease both;
+}
+
+.hero-copy {
+  animation: hero-copy 760ms ease both;
+}
+
+.stagger-card {
+  animation: card-rise 560ms ease both;
+}
+
+.stagger-card:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.stagger-card:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.stagger-card:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.soft-float {
+  animation: soft-float 4.5s ease-in-out infinite;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-copy {
+  from {
+    opacity: 0;
+    transform: translateX(-22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes soft-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}

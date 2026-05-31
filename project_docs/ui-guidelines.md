@@ -1,8 +1,5 @@
 
----
 
-
-```md
 # UI Guidelines
 
 ## Design Style
