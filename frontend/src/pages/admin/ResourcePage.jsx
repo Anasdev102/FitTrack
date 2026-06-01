@@ -117,9 +117,9 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
         {[1, 2, 3].map((page) => <button className={`h-9 w-9 rounded text-sm font-bold ${page === 1 ? "bg-primary text-white" : "border border-line bg-white text-muted"}`} key={page}>{page}</button>)}
       </div>
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <form className="panel flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden" onSubmit={handleSubmit(submit)}>
-            <div className="flex items-start justify-between gap-4 border-b border-line p-7">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm sm:p-4">
+          <form className="panel flex max-h-[90vh] w-[95vw] max-w-4xl flex-col overflow-hidden sm:w-[90vw] lg:w-full" onSubmit={handleSubmit(submit)}>
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-line p-5 sm:p-7">
               <div>
                 <p className="section-kicker">Create record</p>
                 <h2 className="mt-2 text-2xl font-black uppercase">{editingItem ? `Edit ${title.slice(0, -1)}` : actionLabel || `Add ${title.slice(0, -1)}`}</h2>
@@ -128,7 +128,7 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="overflow-y-auto p-7">
+            <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:max-h-[70vh] sm:p-7">
               {submitError && <div className="mb-5 rounded border border-red-100 bg-red-50 p-4 text-sm font-bold text-red-700">{submitError}</div>}
               <div className="grid gap-4 md:grid-cols-2">
                 {fields.map((field) => (
@@ -147,7 +147,7 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
                 ))}
               </div>
             </div>
-            <div className="flex justify-end gap-3 border-t border-line bg-white p-5">
+            <div className="flex shrink-0 justify-end gap-3 border-t border-line bg-white p-4 sm:p-5">
               <Button type="button" variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
               <Button type="submit" disabled={loading}>{loading ? "Saving..." : "Save"}</Button>
             </div>
