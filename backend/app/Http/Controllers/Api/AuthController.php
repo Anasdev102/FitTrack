@@ -9,7 +9,6 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -36,9 +35,9 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Incorrect email or password. Please try again.'],
-            ]);
+            return response()->json([
+                'message' => 'Incorrect email or password. Please try again.',
+            ], 401);
         }
 
         $user->tokens()->delete();
