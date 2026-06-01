@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Check, Clock, ShieldCheck } from "lucide-react";
 import Badge from "../../components/common/Badge";
 import Button from "../../components/common/Button";
+import ConfirmModal from "../../components/common/ConfirmModal";
 import { memberApi } from "../../api/memberApi";
 import { formatCurrency } from "../../utils/formatCurrency";
 
@@ -15,6 +16,7 @@ export default function MySubscription() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(searchParams.get("plan") || "");
+  const [pendingPlanRequest, setPendingPlanRequest] = useState(null);
   const activePlan = useMemo(() => plans[selectedPlan], [plans, selectedPlan]);
 
   useEffect(() => {
@@ -31,10 +33,15 @@ export default function MySubscription() {
   };
 
   const requestSubscription = async (planKey) => {
-    if (subscription?.status === "active" && !window.confirm("You already have an active subscription. Create a new request anyway? The new plan will only activate after cash payment and admin approval.")) {
+    if (subscription?.status === "active") {
+      setPendingPlanRequest(planKey);
       return;
     }
 
+    await submitSubscriptionRequest(planKey);
+  };
+
+  const submitSubscriptionRequest = async (planKey) => {
     try {
       setLoading(true);
       const response = await memberApi.subscribe({ type: planKey });
@@ -47,6 +54,12 @@ export default function MySubscription() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const continuePendingRequest = async () => {
+    const planKey = pendingPlanRequest;
+    setPendingPlanRequest(null);
+    if (planKey) await submitSubscriptionRequest(planKey);
   };
 
   return (
@@ -96,6 +109,17 @@ export default function MySubscription() {
           )) : <p className="text-sm font-semibold text-muted">No subscription requests yet.</p>}
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={Boolean(pendingPlanRequest)}
+        title="Active subscription detected"
+        message="You already have an active subscription. If you continue, your new request will stay pending until you pay cash at the gym and admin approves it."
+        cancelText="Cancel"
+        confirmText="Continue request"
+        variant="warning"
+        onCancel={() => setPendingPlanRequest(null)}
+        onConfirm={continuePendingRequest}
+      />
     </div>
   );
 }

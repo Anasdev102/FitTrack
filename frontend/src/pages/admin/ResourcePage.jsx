@@ -5,6 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Plus, Search, X } from "lucide-react";
 import toast from "react-hot-toast";
 import Button from "../../components/common/Button";
+import ConfirmModal from "../../components/common/ConfirmModal";
+import EmptyState from "../../components/common/EmptyState";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import PageHeader from "../../components/common/PageHeader";
 import Table from "../../components/common/Table";
 
 export default function ResourcePage({ title, slice, fetchAction, createAction, updateAction, deleteAction, columns, actionLabel, fields = [] }) {
@@ -15,6 +19,7 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
   const [submitError, setSubmitError] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [deleteCandidate, setDeleteCandidate] = useState(null);
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
@@ -56,13 +61,16 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
     }
   };
 
-  const removeItem = async (item) => {
+  const removeItem = async () => {
     if (!deleteAction) return;
-    if (!window.confirm(`Delete this ${title.slice(0, -1).toLowerCase()}?`)) return;
+    const item = deleteCandidate;
+    if (!item) return;
+
     try {
       await dispatch(deleteAction(item.id)).unwrap();
       await dispatch(fetchAction());
       toast.success(`${title.slice(0, -1)} deleted`);
+      setDeleteCandidate(null);
     } catch (err) {
       toast.error(typeof err === "string" ? err : "Could not delete.");
     }
@@ -77,13 +85,11 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
 
   return (
     <div className="page-enter grid gap-7">
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <div>
-          <p className="section-kicker">Management</p>
-          <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">{title}</h1>
-        </div>
-        <Button onClick={() => openModal()}><Plus className="h-4 w-4 " />{actionLabel || `Add ${title.slice(0, -1)}`}</Button>
-      </div>
+      <PageHeader
+        kicker="Management"
+        title={title}
+        action={<Button onClick={() => openModal()}><Plus className="h-4 w-4" />{actionLabel || `Add ${title.slice(0, -1)}`}</Button>}
+      />
       {error && <div className="rounded border border-red-100 bg-red-50 p-4 text-sm font-bold text-red-700">{error}</div>}
       <div className="panel flex flex-wrap items-center gap-3 p-4">
         <div className="flex w-full max-w-md items-center gap-2 rounded border border-line bg-white px-4 py-3">
@@ -107,12 +113,13 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
           render: (row) => (
             <div className="flex gap-3">
               {updateAction && <button className="font-black text-primary" type="button" onClick={() => openModal(row)}>Edit</button>}
-              {deleteAction && <button className="font-black text-red-600" type="button" onClick={() => removeItem(row)}>Delete</button>}
+              {deleteAction && <button className="font-black text-red-600" type="button" onClick={() => setDeleteCandidate(row)}>Delete</button>}
             </div>
           ),
         },
       ]} rows={filteredItems} />
-      {loading && <p className="text-center text-sm font-bold text-muted">Loading...</p>}
+      {loading && <LoadingSpinner label={`Loading ${title.toLowerCase()}...`} />}
+      {!loading && !filteredItems.length && <EmptyState title={`No ${title.toLowerCase()} found`} description="Try clearing filters or creating a new record." />}
       <div className="flex justify-center gap-2">
         {[1, 2, 3].map((page) => <button className={`h-9 w-9 rounded text-sm font-bold ${page === 1 ? "bg-primary text-white" : "border border-line bg-white text-muted"}`} key={page}>{page}</button>)}
       </div>
@@ -154,6 +161,16 @@ export default function ResourcePage({ title, slice, fetchAction, createAction, 
           </form>
         </div>
       )}
+      <ConfirmModal
+        isOpen={Boolean(deleteCandidate)}
+        title={`Delete ${title.slice(0, -1)}`}
+        message={`This ${title.slice(0, -1).toLowerCase()} will be removed. This action cannot be undone.`}
+        cancelText="Cancel"
+        confirmText="Delete"
+        variant="danger"
+        onCancel={() => setDeleteCandidate(null)}
+        onConfirm={removeItem}
+      />
     </div>
   );
 }
