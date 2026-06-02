@@ -1,6 +1,7 @@
 import { subscriptionsApi } from "../../api/subscriptionsApi";
 import { createResourceSlice } from "./createResourceSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { getApiErrorMessage } from "../../utils/getApiErrorMessage";
 const slice = createResourceSlice("subscriptions", subscriptionsApi);
 export const {
   fetchItems: fetchSubscriptions,
@@ -12,32 +13,28 @@ export const approveSubscription = createAsyncThunk("subscriptions/approve", asy
   try {
     return (await subscriptionsApi.approve(id)).data;
   } catch (error) {
-    const errors = error.response?.data?.errors;
-    return rejectWithValue(errors ? Object.values(errors).flat().join(" ") : error.response?.data?.message || error.message);
+    return rejectWithValue(getApiErrorMessage(error));
   }
 });
 export const confirmCashPayment = createAsyncThunk("subscriptions/confirmCashPayment", async (id, { rejectWithValue }) => {
   try {
     return (await subscriptionsApi.confirmCashPayment(id)).data;
   } catch (error) {
-    const errors = error.response?.data?.errors;
-    return rejectWithValue(errors ? Object.values(errors).flat().join(" ") : error.response?.data?.message || error.message);
+    return rejectWithValue(getApiErrorMessage(error));
   }
 });
 export const activateSubscription = createAsyncThunk("subscriptions/activate", async (id, { rejectWithValue }) => {
   try {
     return (await subscriptionsApi.activate(id)).data;
   } catch (error) {
-    const errors = error.response?.data?.errors;
-    return rejectWithValue(errors ? Object.values(errors).flat().join(" ") : error.response?.data?.message || error.message);
+    return rejectWithValue(getApiErrorMessage(error));
   }
 });
 export const rejectSubscription = createAsyncThunk("subscriptions/reject", async (id, { rejectWithValue }) => {
   try {
     return (await subscriptionsApi.reject(id)).data;
   } catch (error) {
-    const errors = error.response?.data?.errors;
-    return rejectWithValue(errors ? Object.values(errors).flat().join(" ") : error.response?.data?.message || error.message);
+    return rejectWithValue(getApiErrorMessage(error));
   }
 });
 export default slice.reducer;

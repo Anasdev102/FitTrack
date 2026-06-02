@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { authApi } from '../../api/authApi';
-import { friendlyAuthError } from '../../utils/authMessages';
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 
 const savedUser = localStorage.getItem('fitmanager_user');
 const savedToken = localStorage.getItem('fitmanager_token');
@@ -9,7 +9,7 @@ export const login = createAsyncThunk('auth/login', async (payload, { rejectWith
   try {
     return (await authApi.login(payload)).data;
   } catch (error) {
-    return rejectWithValue(friendlyAuthError(error, 'login'));
+    return rejectWithValue(getApiErrorMessage(error, 'login'));
   }
 });
 
@@ -17,7 +17,7 @@ export const register = createAsyncThunk('auth/register', async (payload, { reje
   try {
     return (await authApi.register(payload)).data;
   } catch (error) {
-    return rejectWithValue(friendlyAuthError(error, 'register'));
+    return rejectWithValue(getApiErrorMessage(error, 'register'));
   }
 });
 

@@ -8,6 +8,7 @@ import Button from "../../components/common/Button";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import { memberApi } from "../../api/memberApi";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { getApiErrorMessage } from "../../utils/getApiErrorMessage";
 
 export default function MySubscription() {
   const [searchParams] = useSearchParams();
@@ -50,7 +51,7 @@ export default function MySubscription() {
       setSelectedPlan(planKey);
       refreshSubscription();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Could not send subscription request.");
+      toast.error(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
