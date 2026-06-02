@@ -2,22 +2,33 @@ services:
   backend:
     build: ./backend
     container_name: fitmanager_backend
+    restart: unless-stopped
     ports:
       - "8001:8001"
     volumes:
       - ./backend:/var/www/html
       - /var/www/html/vendor
+    entrypoint: ["sh", "/var/www/html/.docker/entrypoint.sh"]
+    command: ["php", "-S", "0.0.0.0:8001", "-t", "public", ".docker/server.php"]
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8001
+      FRONTEND_URL: http://localhost:5173
+      DB_CONNECTION: mysql
       DB_HOST: mysql
+      DB_PORT: 3306
       DB_DATABASE: fitmanager
       DB_USERNAME: fitmanager
-      DB_PASSWORD: secret
+      DB_PASSWORD: password
 
   frontend:
     build: ./frontend
     container_name: fitmanager_frontend
+    restart: unless-stopped
     ports:
       - "5173:5173"
     volumes:
@@ -29,29 +40,38 @@ services:
       - backend
 
   mysql:
-    image: mysql:8.4
+    image: mysql:8
     container_name: fitmanager_mysql
+    restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: fitmanager
       MYSQL_USER: fitmanager
-      MYSQL_PASSWORD: secret
+      MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   phpmyadmin:
     image: phpmyadmin:5
     container_name: fitmanager_phpmyadmin
+    restart: unless-stopped
     ports:
       - "8080:80"
     environment:
       PMA_HOST: mysql
+      PMA_PORT: 3306
       PMA_USER: fitmanager
-      PMA_PASSWORD: secret
+      PMA_PASSWORD: password
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
 volumes:
   mysql_data:

@@ -10,6 +10,7 @@ frontend/.vite/
 
 # Environment and local data
 .env
+.env.docker
 .env.*.local
 *.sqlite
 *.sqlite3
