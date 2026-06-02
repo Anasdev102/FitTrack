@@ -35,6 +35,10 @@ return new class extends Migration
             DB::statement('PRAGMA foreign_keys = ON');
         }
 
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY role ENUM('admin', 'member', 'coach') NOT NULL DEFAULT 'member'");
+        }
+
         Schema::table('coaches', function (Blueprint $table) {
             if (! Schema::hasColumn('coaches', 'user_id')) {
                 $table->foreignId('user_id')->nullable()->after('id')->constrained('users')->nullOnDelete();
