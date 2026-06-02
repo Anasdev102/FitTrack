@@ -23,7 +23,7 @@ services:
       DB_PORT: 3306
       DB_DATABASE: fitmanager
       DB_USERNAME: fitmanager
-      DB_PASSWORD: password
+      DB_PASSWORD: secret
 
   frontend:
     build: ./frontend
@@ -48,7 +48,7 @@ services:
     environment:
       MYSQL_DATABASE: fitmanager
       MYSQL_USER: fitmanager
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - mysql_data:/var/lib/mysql
@@ -68,7 +68,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_USER: fitmanager
-      PMA_PASSWORD: password
+      PMA_PASSWORD: secret
     depends_on:
       mysql:
         condition: service_healthy
