@@ -13,6 +13,7 @@ const reminderTypes = [
   { value: 'expiring_soon', label: 'Expiring soon' },
   { value: 'expired', label: 'Expired subscription' },
   { value: 'renewal', label: 'Renewal reminder' },
+  { value: 'rejected', label: 'Rejected request' },
   { value: 'cancelled', label: 'Cancelled request' },
 ];
 
@@ -34,6 +35,7 @@ export default function AiReminder() {
   const { items: members, loading: membersLoading } = useSelector((state) => state.members);
   const selectedMemberId = watch('member_id');
   const watchedPhone = watch('phone');
+  const selectedReminderType = watch('reminder_type');
   const selectedMember = members.find((member) => String(member.id) === String(selectedMemberId));
   const output = generatedMessage || message;
   const formattedPhone = formatMoroccoPhone(watchedPhone || selectedMember?.phone || '');
@@ -45,6 +47,7 @@ export default function AiReminder() {
     : '';
   const [memberSearch, setMemberSearch] = useState('');
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState(null);
 
   const memberResults = useMemo(() => members.filter((member) => {
     const value = `${member.name || ''} ${member.email || ''} ${member.phone || ''}`.toLowerCase();
@@ -56,9 +59,13 @@ export default function AiReminder() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!selectedMember) return;
+    if (!selectedMember) {
+      setSelectedSubscription(null);
+      return;
+    }
 
     setValue('phone', selectedMember.phone || '');
+    setSelectedSubscription(null);
     setSubscriptionLoading(true);
 
     subscriptionsApi.list({ search: selectedMember.name })
@@ -70,27 +77,44 @@ export default function AiReminder() {
 
         if (!subscription) return;
 
+        setSelectedSubscription(subscription);
         setValue('plan_name', subscription.plan_name || subscription.type || '');
         setValue('amount', subscription.price || '');
         setValue('payment_deadline', toDateTimeInput(subscription.payment_deadline));
         setValue('end_date', toDateInput(subscription.end_date));
-        setValue('reminder_type', reminderTypeFromSubscription(subscription));
+        setValue('reminder_type', firstValidReminderType(subscription));
       })
       .catch(() => {
         const active = selectedMember.active_subscription;
         if (active) {
+          setSelectedSubscription(active);
           setValue('plan_name', active.plan_name || active.type || '');
           setValue('amount', active.price || '');
           setValue('end_date', toDateInput(active.end_date));
-          setValue('reminder_type', 'expiring_soon');
+          setValue('reminder_type', firstValidReminderType(active));
         }
       })
       .finally(() => setSubscriptionLoading(false));
   }, [selectedMember, setValue]);
 
+  const validReminderTypes = useMemo(() => validReminderTypesForSubscription(selectedSubscription), [selectedSubscription]);
+  const invalidTypeMessage = selectedSubscription && selectedReminderType === 'pending_payment' && !validReminderTypes.includes('pending_payment')
+    ? 'This member does not have a pending cash payment request.'
+    : '';
+
+  useEffect(() => {
+    if (!selectedSubscription || validReminderTypes.includes(selectedReminderType)) return;
+    setValue('reminder_type', validReminderTypes[0] || 'renewal');
+  }, [selectedReminderType, selectedSubscription, setValue, validReminderTypes]);
+
   const submit = (data) => {
     if (!selectedMember) {
       toast.error('Choose a member first.');
+      return;
+    }
+
+    if (!validReminderTypes.includes(data.reminder_type)) {
+      toast.error('This member does not have a pending cash payment request.');
       return;
     }
 
@@ -103,6 +127,8 @@ export default function AiReminder() {
       amount: data.amount || undefined,
       payment_deadline: data.payment_deadline || undefined,
       end_date: data.end_date || undefined,
+      subscription_status: selectedSubscription?.status,
+      payment_status: selectedSubscription?.payment_status,
     }));
   };
 
@@ -179,12 +205,28 @@ export default function AiReminder() {
           </div>
 
           {subscriptionLoading && <p className="text-xs font-bold text-primary">Loading subscription details...</p>}
+          {selectedSubscription && (
+            <div className="rounded border border-line bg-slate-50 p-3 text-xs font-bold text-slate-600">
+              Subscription status: <span className="uppercase text-primary">{selectedSubscription.status}</span>
+              <span className="mx-2 text-slate-300">|</span>
+              Payment: <span className="uppercase text-primary">{selectedSubscription.payment_status || 'unpaid'}</span>
+            </div>
+          )}
+          {invalidTypeMessage && (
+            <p className="rounded border border-amber-100 bg-amber-50 p-3 text-sm font-bold text-amber-800">
+              {invalidTypeMessage}
+            </p>
+          )}
 
           <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-2 text-xs font-bold text-slate-700">
               Reminder type
               <select className="premium-input rounded px-3.5 py-3 text-sm" {...register('reminder_type')}>
-                {reminderTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}
+                {reminderTypes.map((type) => (
+                  <option key={type.value} value={type.value} disabled={!validReminderTypes.includes(type.value)}>
+                    {type.label}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="grid gap-2 text-xs font-bold text-slate-700">
@@ -255,12 +297,34 @@ export default function AiReminder() {
   );
 }
 
-function reminderTypeFromSubscription(subscription) {
-  if (subscription.status === 'pending' && subscription.payment_status !== 'paid') return 'pending_payment';
-  if (subscription.status === 'cancelled') return 'cancelled';
-  if (subscription.status === 'expired') return 'expired';
-  if (subscription.status === 'active') return 'expiring_soon';
-  return 'renewal';
+function firstValidReminderType(subscription) {
+  return validReminderTypesForSubscription(subscription)[0] || 'renewal';
+}
+
+function validReminderTypesForSubscription(subscription) {
+  if (!subscription) return reminderTypes.map((type) => type.value);
+
+  if (subscription.status === 'pending' && subscription.payment_status === 'unpaid') {
+    return ['pending_payment'];
+  }
+
+  if (subscription.status === 'active') {
+    return ['expiring_soon', 'renewal'];
+  }
+
+  if (subscription.status === 'expired') {
+    return ['expired', 'renewal'];
+  }
+
+  if (subscription.status === 'rejected') {
+    return ['rejected'];
+  }
+
+  if (subscription.status === 'cancelled') {
+    return ['cancelled'];
+  }
+
+  return ['renewal'];
 }
 
 function toDateInput(value) {

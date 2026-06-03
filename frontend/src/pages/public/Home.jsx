@@ -121,15 +121,6 @@ export default function Home() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const context = gsap.context(() => {
-      gsap.from(".hero-anim", {
-        opacity: 0,
-        y: 46,
-        duration: 0.95,
-        ease: "power4.out",
-        stagger: 0.12,
-        delay: 0.15,
-      });
-
       gsap.from(".feature-strip-card", {
         opacity: 0,
         y: 70,
@@ -179,38 +170,43 @@ export default function Home() {
 
   return (
     <main className="bg-black text-white" ref={pageRef}>
-      <section id="home" className="hero-image min-h-screen overflow-hidden">
-        <div className="mx-auto flex min-h-screen max-w-7xl items-center px-5 pt-24">
-          <div className="hero-copy max-w-4xl gsap-reveal">
-            <div className="hero-anim inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.32em] text-primary">
+      <section id="home" className="hero-image relative isolate min-h-screen overflow-hidden">
+        <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 pb-16 pt-28 md:pb-20">
+          <div className="block max-w-4xl opacity-100" style={{ opacity: 1, transform: 'none' }}>
+            <div className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.32em] text-primary" style={{ opacity: 1, transform: 'none' }}>
               <Sparkles className="h-4 w-4" />
               Private fitness club
             </div>
-            <h1 className="hero-anim fitness-title mt-7 max-w-5xl text-6xl md:text-8xl">
-              Build strength. Run smarter.
+            <h1 className="fitness-title mt-7 block max-w-5xl text-5xl leading-tight text-white opacity-100 sm:text-6xl md:text-7xl" style={{ opacity: 1, transform: 'none' }}>
+              Build your strongest version.
             </h1>
-            <p className="hero-anim mt-7 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
-              A bold management workspace for one fitness club owner: member requests,
-              coach assignments, attendance, payments, and subscription control in one place.
+            <p className="mt-7 block max-w-2xl text-base leading-8 text-slate-300 opacity-100 md:text-lg" style={{ opacity: 1, transform: 'none' }}>
+              Join FitManager and train with professional coaches, flexible membership plans, and a modern fitness experience.
             </p>
-            <div className="hero-anim mt-9 flex flex-wrap gap-4">
+            <div className="mt-9 flex flex-wrap gap-4 opacity-100" style={{ opacity: 1, transform: 'none' }}>
               <a
                 className="inline-flex items-center gap-2 rounded bg-primary px-6 py-3 text-sm font-black uppercase tracking-wide text-white shadow-2xl shadow-orange-900/30 transition hover:-translate-y-1"
                 href={dashboardHref}
               >
-                Open dashboard <ArrowRight className="h-4 w-4" />
+                Join now <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 className="inline-flex items-center gap-2 rounded border border-white/20 bg-white/10 px-6 py-3 text-sm font-black uppercase tracking-wide text-white backdrop-blur transition hover:-translate-y-1 hover:border-primary"
                 href="#plans"
               >
-                View memberships
+                View plans
               </a>
             </div>
-            <div className="hero-anim mt-14 grid max-w-3xl gap-3 sm:grid-cols-3">
-              {["One private club", "Coach control", "Approval workflow"].map((item) => (
-                <div className="border-l-2 border-primary bg-white/5 p-4 text-sm font-black uppercase tracking-wide text-white/85 backdrop-blur" key={item}>
-                  {item}
+            <div className="mt-12 grid max-w-3xl gap-4 opacity-100 sm:grid-cols-3" style={{ opacity: 1, transform: 'none' }}>
+              {[
+                ["500+", "Active Members"],
+                ["20+", "Professional Coaches"],
+                ["95%", "Member Satisfaction"],
+              ].map(([value, label]) => (
+                <div className="rounded border border-white/15 bg-white/10 p-5 text-white shadow-2xl shadow-black/20 backdrop-blur" key={label}>
+                  <p className="text-3xl font-black tracking-tight">{value}</p>
+                  <p className="mt-2 text-xs font-black uppercase tracking-[0.18em] text-white/70">{label}</p>
                 </div>
               ))}
             </div>

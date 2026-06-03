@@ -63,12 +63,47 @@ export const mockAttendance = [
   { id: 4, member: { name: "Emma Davis" }, date: "2026-05-22", time: "09:45 AM" },
 ];
 
-export function reminderMessage({ member_name = "Michael Johnson", end_date = "2026-06-01", language = "english" }) {
+export function reminderMessage({
+  member_name = "Michael Johnson",
+  end_date = "2026-06-01",
+  language = "en",
+  reminder_type = "renewal",
+  plan_name = "membership",
+  amount = "200",
+  payment_deadline = "2026-06-03 18:00",
+}) {
   const messages = {
-    english: `Hello ${member_name}, this is a friendly reminder that your membership will expire on ${end_date}. Please renew your subscription to continue enjoying the club facilities.`,
-    french: `Bonjour ${member_name}, votre abonnement expire le ${end_date}. Merci de le renouveler pour continuer a profiter du club.`,
-    arabic: `مرحبا ${member_name}، نذكركم بأن الاشتراك سينتهي بتاريخ ${end_date}. يرجى تجديده لمواصلة الاستفادة من النادي.`,
+    pending_payment: {
+      en: `Hello ${member_name}, your ${plan_name} subscription request is pending. Please visit the gym reception before ${payment_deadline} to pay ${amount} MAD in cash and activate your membership.`,
+      fr: `Bonjour ${member_name}, votre demande d'abonnement ${plan_name} est en attente. Merci de passer a l'accueil avant le ${payment_deadline} pour regler ${amount} MAD en especes et activer votre abonnement.`,
+      ar: `مرحبا ${member_name}، طلب اشتراكك في خطة ${plan_name} مازال في انتظار الأداء. المرجو زيارة استقبال القاعة قبل ${payment_deadline} لأداء مبلغ ${amount} درهم نقدا وتفعيل الاشتراك.`,
+    },
+    expiring_soon: {
+      en: `Hello ${member_name}, your ${plan_name} subscription expires on ${end_date}. You can visit the reception to renew it in cash.`,
+      fr: `Bonjour ${member_name}, votre abonnement ${plan_name} expire le ${end_date}. Vous pouvez passer a l'accueil pour le renouveler en especes.`,
+      ar: `مرحبا ${member_name}، اشتراكك في خطة ${plan_name} سينتهي بتاريخ ${end_date}. يمكنك زيارة استقبال القاعة لتجديد الاشتراك نقدا.`,
+    },
+    expired: {
+      en: `Hello ${member_name}, your ${plan_name} subscription expired on ${end_date}. Please visit the reception to renew it.`,
+      fr: `Bonjour ${member_name}, votre abonnement ${plan_name} a expire le ${end_date}. Merci de passer a l'accueil pour le renouveler.`,
+      ar: `مرحبا ${member_name}، اشتراكك في خطة ${plan_name} انتهى بتاريخ ${end_date}. المرجو زيارة استقبال القاعة لتجديد الاشتراك.`,
+    },
+    renewal: {
+      en: `Hello ${member_name}, you can renew your ${plan_name} subscription at the gym reception. Payment is accepted in cash only.`,
+      fr: `Bonjour ${member_name}, vous pouvez renouveler votre abonnement ${plan_name} a l'accueil de la salle. Le paiement se fait uniquement en especes.`,
+      ar: `مرحبا ${member_name}، يمكنك تجديد اشتراكك في خطة ${plan_name} عبر استقبال القاعة. الأداء يتم نقدا فقط.`,
+    },
+    cancelled: {
+      en: `Hello ${member_name}, your subscription request was cancelled because the cash payment was not completed within the deadline. You can submit a new request from the platform.`,
+      fr: `Bonjour ${member_name}, votre demande d'abonnement a ete annulee car le paiement en especes n'a pas ete effectue dans le delai prevu. Vous pouvez creer une nouvelle demande depuis la plateforme.`,
+      ar: `مرحبا ${member_name}، تم إلغاء طلب اشتراكك لأن الأداء النقدي لم يتم داخل المهلة المحددة. يمكنك إرسال طلب جديد من المنصة.`,
+    },
+    rejected: {
+      en: `Hello ${member_name}, your subscription request was rejected. Please contact the gym reception for more information or submit a new request from the platform.`,
+      fr: `Bonjour ${member_name}, votre demande d'abonnement a ete refusee. Merci de contacter l'accueil de la salle pour plus d'informations ou de soumettre une nouvelle demande depuis la plateforme.`,
+      ar: `مرحبا ${member_name}، تم رفض طلب اشتراكك. المرجو التواصل مع استقبال القاعة لمزيد من المعلومات أو إرسال طلب جديد من المنصة.`,
+    },
   };
 
-  return messages[language] || messages.english;
+  return messages[reminder_type]?.[language] || messages.renewal.en;
 }
