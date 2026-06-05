@@ -1,20 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { mockResources } from '../../api/mockData';
-
-function apiErrorMessage(error) {
-  const errors = error.response?.data?.errors;
-  if (errors) {
-    return Object.values(errors).flat().join(' ');
-  }
-  return error.response?.data?.message || error.message || 'Request failed.';
-}
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 
 export function createResourceSlice(name, api) {
   const fetchItems = createAsyncThunk(`${name}/fetch`, async (params, { rejectWithValue }) => {
     try {
       return (await api.list(params)).data;
     } catch (error) {
-      if (error.response) return rejectWithValue(apiErrorMessage(error));
+      if (error.response) return rejectWithValue(getApiErrorMessage(error));
       return { data: mockResources[name] || [] };
     }
   });
@@ -22,14 +15,14 @@ export function createResourceSlice(name, api) {
     try {
       return (await api.create(payload)).data;
     } catch (error) {
-      return rejectWithValue(apiErrorMessage(error));
+      return rejectWithValue(getApiErrorMessage(error));
     }
   });
   const updateItem = createAsyncThunk(`${name}/update`, async ({ id, data }, { rejectWithValue }) => {
     try {
       return (await api.update(id, data)).data;
     } catch (error) {
-      return rejectWithValue(apiErrorMessage(error));
+      return rejectWithValue(getApiErrorMessage(error));
     }
   });
   const deleteItem = createAsyncThunk(`${name}/delete`, async (id, { rejectWithValue }) => {
@@ -37,7 +30,7 @@ export function createResourceSlice(name, api) {
       await api.remove(id);
       return id;
     } catch (error) {
-      return rejectWithValue(apiErrorMessage(error));
+      return rejectWithValue(getApiErrorMessage(error));
     }
   });
 

@@ -3,46 +3,13 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\AiReminderRequest;
 
 class AiReminderController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(AiReminderRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'member_name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
-            'reminder_type' => ['required', Rule::in(['pending_payment', 'expiring_soon', 'expired', 'renewal', 'cancelled', 'rejected'])],
-            'language' => ['required', Rule::in(['ar', 'fr', 'en'])],
-            'plan_name' => ['nullable', 'string', 'max:255'],
-            'amount' => ['nullable', 'numeric'],
-            'payment_deadline' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date'],
-            'subscription_status' => ['nullable', Rule::in(['pending', 'active', 'expired', 'rejected', 'cancelled'])],
-            'payment_status' => ['nullable', Rule::in(['paid', 'unpaid'])],
-        ]);
-
-        $validator->after(function ($validator) use ($request) {
-            $type = $request->input('reminder_type');
-            $status = $request->input('subscription_status');
-            $paymentStatus = $request->input('payment_status');
-
-            if ($type === 'pending_payment' && ($status !== 'pending' || $paymentStatus !== 'unpaid')) {
-                $validator->errors()->add('reminder_type', 'This member does not have a pending cash payment request.');
-            }
-
-            if ($type === 'pending_payment' && ! $request->filled('payment_deadline')) {
-                $validator->errors()->add('payment_deadline', 'Payment deadline is required for pending cash payment reminders.');
-            }
-
-            if (in_array($type, ['expiring_soon', 'expired'], true) && ! $request->filled('end_date')) {
-                $validator->errors()->add('end_date', 'End date is required for this reminder type.');
-            }
-        });
-
-        $data = $validator->validate();
+        $data = $request->validated();
 
         return response()->json([
             'message' => $this->message($data),

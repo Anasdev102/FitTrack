@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Member;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MemberProfileUpdateRequest;
+use App\Http\Requests\MemberSubscribeRequest;
 use App\Http\Resources\AttendanceResource;
 use App\Http\Resources\CoachResource;
 use App\Http\Resources\PaymentResource;
@@ -14,7 +16,6 @@ use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\TrainingPlan;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -72,26 +73,19 @@ class ProfileController extends Controller
         return AttendanceResource::collection($request->user()->attendances()->latest()->get());
     }
 
-    public function update(Request $request)
+    public function update(MemberProfileUpdateRequest $request)
     {
         $user = $request->user();
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:30'],
-            'image' => ['nullable', 'string', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $user->update($data);
 
         return new UserResource($user);
     }
 
-    public function subscribe(Request $request)
+    public function subscribe(MemberSubscribeRequest $request)
     {
-        $data = $request->validate([
-            'type' => ['required', Rule::in(['monthly', 'quarterly', 'yearly'])],
-        ]);
+        $data = $request->validated();
 
         $user = $request->user();
         $plan = config("plans.{$data['type']}");

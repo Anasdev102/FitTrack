@@ -25,4 +25,20 @@ class CoachScheduleRequest extends FormRequest
             'status' => ['nullable', Rule::in(['scheduled', 'completed', 'cancelled'])],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'coach_id.required' => 'Coach is required.',
+            'coach_id.exists' => 'Please choose a valid coach.',
+            'title.required' => 'Title is required.',
+            'schedule_date.required' => 'Date is required.',
+            'schedule_date.date' => 'Date must be valid.',
+            'start_time.required' => 'Start time is required.',
+            'start_time.date_format' => 'Start time must use HH:MM format.',
+            'end_time.date_format' => 'End time must use HH:MM format.',
+            'end_time.after' => 'End time must be after start time.',
+            'status.in' => 'Please choose a valid status.',
+        ];
+    }
 }

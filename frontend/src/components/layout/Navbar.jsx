@@ -94,7 +94,7 @@ export default function Navbar() {
           <div className="grid gap-1 p-4">
             {navLinks.map((item) => (
               <a
-                className={`rounded px-4 py-3 text-sm font-black uppercase tracking-[0.16em] transition ${isActiveLink(item) ? 'bg-primary text-white' : 'text-white hover:bg-white/10 hover:text-primary'}`}
+                className={`rounded px-4 py-2.5 text-xs font-black uppercase tracking-[0.12em] transition ${isActiveLink(item) ? 'bg-primary text-white' : 'text-white hover:bg-white/10 hover:text-primary'}`}
                 href={item.href}
                 key={item.href}
                 onClick={() => setIsMenuOpen(false)}
@@ -103,7 +103,7 @@ export default function Navbar() {
               </a>
             ))}
             <Link
-              className="mt-2 rounded bg-primary px-4 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-white shadow-lg shadow-orange-950/30 transition hover:bg-orange-600"
+              className="mt-2 rounded bg-primary px-4 py-2.5 text-center text-xs font-black uppercase tracking-[0.12em] text-white shadow-lg shadow-orange-950/30 transition hover:bg-orange-600"
               to={accountHref}
               onClick={() => setIsMenuOpen(false)}
             >

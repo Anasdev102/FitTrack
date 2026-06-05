@@ -214,7 +214,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="feature-strip relative z-10 -mt-20 px-5 pb-20">
+      <section className="feature-strip relative z-10 px-5 pb-20 pt-8 md:-mt-20 md:pt-0">
         <div className="mx-auto grid max-w-7xl gap-0 shadow-2xl shadow-black/30 md:grid-cols-3">
           {[
             ["01", "Member requests", "Let members request plans while admin keeps final approval."],

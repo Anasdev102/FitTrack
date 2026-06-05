@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CoachAssignmentRequest;
 use App\Models\CoachAssignment;
 use Illuminate\Http\Request;
 
@@ -18,12 +19,9 @@ class CoachAssignmentController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CoachAssignmentRequest $request)
     {
-        $data = $request->validate([
-            'coach_id' => ['required', 'exists:coaches,id'],
-            'member_id' => ['required', 'exists:users,id'],
-        ]);
+        $data = $request->validated();
 
         $assignment = CoachAssignment::updateOrCreate(
             ['coach_id' => $data['coach_id'], 'member_id' => $data['member_id']],

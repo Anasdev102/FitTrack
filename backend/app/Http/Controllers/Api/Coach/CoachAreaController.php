@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Coach;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CoachNoteRequest;
+use App\Http\Requests\TrainingPlanRequest;
 use App\Http\Resources\AttendanceResource;
 use App\Http\Resources\CoachNoteResource;
 use App\Http\Resources\CoachScheduleResource;
@@ -15,7 +17,6 @@ use App\Models\CoachSchedule;
 use App\Models\TrainingPlan;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class CoachAreaController extends Controller
 {
@@ -84,12 +85,12 @@ class CoachAreaController extends Controller
         );
     }
 
-    public function storeNote(Request $request, User $member)
+    public function storeNote(CoachNoteRequest $request, User $member)
     {
         $coach = $this->coachFor($request);
         $this->ensureAssigned($coach, $member);
 
-        $data = $request->validate(['note' => ['required', 'string', 'max:5000']]);
+        $data = $request->validated();
 
         return new CoachNoteResource(CoachNote::create([
             'coach_id' => $coach->id,
@@ -108,16 +109,12 @@ class CoachAreaController extends Controller
         );
     }
 
-    public function storeTrainingPlan(Request $request, User $member)
+    public function storeTrainingPlan(TrainingPlanRequest $request, User $member)
     {
         $coach = $this->coachFor($request);
         $this->ensureAssigned($coach, $member);
 
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:10000'],
-            'status' => ['nullable', Rule::in(['active', 'completed'])],
-        ]);
+        $data = $request->validated();
 
         return new TrainingPlanResource(TrainingPlan::create([
             'coach_id' => $coach->id,
