@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { AlertTriangle, Info, ShieldAlert, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Button from './Button';
 
 const variants = {
@@ -24,14 +25,17 @@ export default function ConfirmModal({
   isOpen,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   variant = 'warning',
 }) {
+  const { t } = useTranslation();
   const config = variants[variant] || variants.warning;
   const Icon = config.icon;
+  const confirmLabel = confirmText || t('common.confirm');
+  const cancelLabel = cancelText || t('common.cancel');
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -68,8 +72,8 @@ export default function ConfirmModal({
         <p className="mt-3 text-sm leading-7 text-muted">{message}</p>
 
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
-          <Button className="w-full sm:w-auto" variant="ghost" type="button" onClick={onCancel}>{cancelText}</Button>
-          <Button className="w-full sm:w-auto" variant={config.confirmVariant} type="button" onClick={onConfirm}>{confirmText}</Button>
+          <Button className="w-full sm:w-auto" variant="ghost" type="button" onClick={onCancel}>{cancelLabel}</Button>
+          <Button className="w-full sm:w-auto" variant={config.confirmVariant} type="button" onClick={onConfirm}>{confirmLabel}</Button>
         </div>
       </div>
     </div>

@@ -49,7 +49,7 @@ export default function Login() {
         <form className="w-full max-w-md rounded-lg border border-white/10 bg-white p-8 shadow-2xl" onSubmit={handleSubmit(submit)}>
           <Link className="mb-10 flex items-center gap-3" to="/">
             <div className="grid h-11 w-11 place-items-center rounded bg-primary text-white"><Zap className="h-5 w-5 fill-white text-white" /></div>
-            <div><p className="font-black">FitManager</p><p className="text-xs font-bold text-muted">Private Club OS</p></div>
+            <div><p className="font-black">FT</p><p className="text-xs font-bold text-muted">Private Club OS</p></div>
           </Link>
           <p className="section-kicker">Secure access</p>
           <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">Welcome back</h1>

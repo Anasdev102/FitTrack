@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppRouter from './router/AppRouter.jsx';
 import { fetchCurrentUser } from './store/slices/authSlice.js';
+import DomTranslator from './components/common/DomTranslator.jsx';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -11,5 +12,10 @@ export default function App() {
     if (token) dispatch(fetchCurrentUser());
   }, [dispatch, token]);
 
-  return <AppRouter />;
+  return (
+    <>
+      <DomTranslator />
+      <AppRouter />
+    </>
+  );
 }

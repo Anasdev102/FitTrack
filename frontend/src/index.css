@@ -10,7 +10,7 @@ body {
   margin: 0;
   background: #f5f5f5;
   color: #111111;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: Sora, "Space Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .panel {
@@ -39,6 +39,14 @@ body {
     linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.86)),
     url("https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=2400&q=90");
   background-position: center;
+  background-size: cover;
+}
+
+.saas-hero {
+  background-image:
+    linear-gradient(115deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.86) 42%, rgba(0, 0, 0, 0.34) 100%),
+    url("https://images.unsplash.com/photo-1517964603305-11c0f6f66012?auto=format&fit=crop&w=2400&q=90");
+  background-position: center right;
   background-size: cover;
 }
 

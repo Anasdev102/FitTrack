@@ -4,9 +4,11 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use PDOException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
@@ -77,10 +79,30 @@ class Handler extends ExceptionHandler
             ], $status);
         }
 
+        if ($this->isDatabaseUnavailable($e)) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Database connection unavailable. Please make sure MySQL is running.',
+            ], 503);
+        }
+
         report($e);
 
         return response()->json([
             'message' => 'Something went wrong. Please try again later.',
         ], 500);
+    }
+
+    private function isDatabaseUnavailable(Throwable $e): bool
+    {
+        if (! $e instanceof QueryException) {
+            return false;
+        }
+
+        $previous = $e->getPrevious();
+
+        return $previous instanceof PDOException
+            && (int) $previous->getCode() === 2002;
     }
 }

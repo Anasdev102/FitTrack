@@ -149,7 +149,7 @@ export default function AiReminder() {
   };
 
   return (
-    <div className="page-enter grid gap-7">
+    <div className="page-enter grid gap-7">j
       <div>
         <p className="section-kicker">Retention assistant</p>
         <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">AI Reminder</h1>
@@ -229,14 +229,7 @@ export default function AiReminder() {
                 ))}
               </select>
             </label>
-            <label className="grid gap-2 text-xs font-bold text-slate-700">
-              Language
-              <select className="premium-input rounded px-3.5 py-3 text-sm" {...register('language')}>
-                <option value="fr">French</option>
-                <option value="en">English</option>
-                <option value="ar">Arabic</option>
-              </select>
-            </label>
+
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -270,15 +263,6 @@ export default function AiReminder() {
                 <MessageCircle className="h-4 w-4" />
                 Send via WhatsApp
               </Button>
-              {selectedMember?.email && (
-                <a
-                  className={`inline-flex items-center justify-center gap-2 rounded border border-black/10 bg-white px-4 py-2.5 text-sm font-black uppercase tracking-wide text-ink transition hover:-translate-y-0.5 hover:border-primary hover:text-primary ${!output ? 'pointer-events-none opacity-60' : ''}`}
-                  href={emailHref || undefined}
-                >
-                  <Mail className="h-4 w-4" />
-                  Send via Email
-                </a>
-              )}
             </div>
           </div>
           {!formattedPhone && (

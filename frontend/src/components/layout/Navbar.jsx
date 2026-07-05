@@ -3,23 +3,26 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Menu, X, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../common/LanguageSwitcher';
 
 const navLinks = [
-  { label: 'Home', href: '/#home', hash: '#home', home: true },
-  { label: 'Services', href: '/#services', hash: '#services' },
-  { label: 'Plans', href: '/#plans', hash: '#plans', path: '/pricing' },
-  { label: 'Coaches', href: '/#coaches', hash: '#coaches', path: '/coaches' },
-  { label: 'Contact', href: '/#contact', hash: '#contact', path: '/contact' },
+  { labelKey: 'nav.home', href: '/#home', hash: '#home', home: true },
+  { labelKey: 'nav.services', href: '/#services', hash: '#services' },
+  { labelKey: 'nav.plans', href: '/#plans', hash: '#plans', path: '/pricing' },
+  { labelKey: 'nav.coaches', href: '/#coaches', hash: '#coaches', path: '/coaches' },
+  { labelKey: 'nav.contact', href: '/#contact', hash: '#contact', path: '/contact' },
 ];
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const savedUser = user || readSavedUser();
   const accountHref = savedUser ? (savedUser.role === "admin" ? "/admin" : savedUser.role === "coach" ? "/coach/dashboard" : "/member") : "/login";
-  const accountLabel = savedUser ? "Dashboard" : "Client Login";
+  const accountLabel = savedUser ? t('nav.dashboard') : t('nav.clientLogin');
 
   useEffect(() => {
     const updateNavbar = () => setIsScrolled(window.scrollY > 12);
@@ -54,22 +57,23 @@ export default function Navbar() {
       isScrolled ? 'border-white/10 bg-ink shadow-2xl shadow-black/30' : 'border-white/10 bg-transparent'
     }`}>
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 text-white">
-        <Link className="flex items-center gap-3 text-xl font-black uppercase tracking-tight text-white transition hover:text-primary" to="/">
-          <span className="grid h-10 w-10 place-items-center rounded bg-primary"><Zap className="h-5 w-5 fill-white text-white" /></span>
-          FitManager
+        <Link className="group flex items-center gap-3 text-xl font-black uppercase tracking-tight text-white transition hover:text-primary" to="/">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary shadow-lg shadow-primary/25 transition duration-300 group-hover:-translate-y-0.5 group-hover:rotate-3"><Zap className="h-5 w-5 fill-white text-white" /></span>
+          FT
         </Link>
 
-        <div className="hidden items-center gap-8 text-xs font-black uppercase tracking-[0.16em] md:flex">
+        <div className="hidden items-center gap-6 text-[11px] font-black uppercase tracking-[0.14em] md:flex">
           {navLinks.map((item) => (
             <a
-              className={`${isActiveLink(item) ? 'text-primary' : 'text-white'} transition hover:text-primary`}
+              className={`relative py-2 transition duration-300 hover:-translate-y-0.5 hover:text-primary ${isActiveLink(item) ? 'text-primary after:absolute after:inset-x-1 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-primary' : 'text-white/90'}`}
               href={item.href}
               key={item.href}
             >
-              {item.label}
+              {t(item.labelKey)}
             </a>
           ))}
-          <Link className="rounded bg-primary px-5 py-3 text-white shadow-2xl shadow-orange-950/30 transition hover:-translate-y-0.5 hover:bg-orange-600" to={accountHref}>{accountLabel}</Link>
+          <LanguageSwitcher compact className="h-10 rounded-full px-3" />
+          <Link className="rounded-full bg-primary px-4 py-2.5 text-[11px] text-white shadow-xl shadow-orange-950/25 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-500" to={accountHref}>{accountLabel}</Link>
         </div>
 
         <button
@@ -99,9 +103,10 @@ export default function Navbar() {
                 key={item.href}
                 onClick={() => setIsMenuOpen(false)}
               >
-                {item.label}
+                {t(item.labelKey)}
               </a>
             ))}
+            <LanguageSwitcher compact className="mx-4 my-2 justify-center" />
             <Link
               className="mt-2 rounded bg-primary px-4 py-2.5 text-center text-xs font-black uppercase tracking-[0.12em] text-white shadow-lg shadow-orange-950/30 transition hover:bg-orange-600"
               to={accountHref}

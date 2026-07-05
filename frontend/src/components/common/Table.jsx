@@ -1,5 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 export default function Table({ columns, rows }) {
+  const { t } = useTranslation();
+
   return (
     <div className="panel overflow-x-auto">
       <table className="w-full text-left text-sm">
@@ -13,7 +16,7 @@ export default function Table({ columns, rows }) {
             </tr>
           ))}
           {(!rows || rows.length === 0) && (
-            <tr><td className="px-5 py-10 text-center text-sm text-muted" colSpan={columns.length}>No records to show.</td></tr>
+            <tr><td className="px-5 py-10 text-center text-sm text-muted" colSpan={columns.length}>{t('common.noRecords')}</td></tr>
           )}
         </tbody>
       </table>

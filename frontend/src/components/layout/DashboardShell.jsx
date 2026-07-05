@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Menu, Search, X } from 'lucide-react';
 import Sidebar from './Sidebar';
+import LanguageSwitcher from '../common/LanguageSwitcher';
 
 const avatarImages = {
   admin: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80',
@@ -41,6 +42,7 @@ export default function DashboardShell({ role, kicker, title, userName, children
               <input className="w-44 bg-transparent text-sm outline-none xl:w-56" placeholder="Search..." />
               <Search className="h-4 w-4 text-muted" />
             </div>
+            <LanguageSwitcher compact tone="light" className="hidden md:inline-flex" />
             <div className="flex items-center gap-3">
               <img className="h-10 w-10 rounded object-cover" src={avatarImages[role]} alt={roleLabel} />
               <div className="hidden md:block">

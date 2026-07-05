@@ -87,7 +87,7 @@ export default function Sidebar({ role, onNavigate }) {
           <Zap className="h-5 w-5 fill-white text-white" />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-lg font-black tracking-tight">FitManager</p>
+          <p className="truncate text-lg font-black tracking-tight">FT</p>
           <p className="truncate text-xs font-bold uppercase text-white/45">Private Club OS</p>
         </div>
       </Link>

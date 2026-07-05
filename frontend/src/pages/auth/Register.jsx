@@ -42,7 +42,7 @@ export default function Register() {
         <form className="my-auto w-full max-w-lg rounded-lg border border-white/10 bg-white p-6 shadow-2xl sm:p-8" onSubmit={handleSubmit(submit)}>
           <Link className="mb-8 flex items-center gap-3" to="/">
             <div className="grid h-11 w-11 place-items-center rounded bg-primary text-white"><Zap className="h-5 w-5 fill-white text-white" /></div>
-            <div><p className="font-black">FitManager</p><p className="text-xs font-bold text-muted">Member access</p></div>
+            <div><p className="font-black">FT</p><p className="text-xs font-bold text-muted">Member access</p></div>
           </Link>
           <p className="section-kicker">Join the club</p>
           <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">Create member account</h1>
