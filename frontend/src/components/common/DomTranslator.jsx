@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 const originalText = new WeakMap();
 const translatableAttributes = ['placeholder', 'aria-label', 'title'];
+const textNodeFilter = NodeFilter.SHOW_TEXT;
 const blockedTags = new Set(['SCRIPT', 'STYLE', 'CODE', 'PRE', 'NOSCRIPT']);
 const keyMap = {
   Home: 'nav.home',
@@ -78,7 +79,7 @@ const translateValue = (i18n, value) => {
 };
 
 const translateTextNodes = (root, i18n) => {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const walker = document.createTreeWalker(root, textNodeFilter);
   const nodes = [];
 
   while (walker.nextNode()) {

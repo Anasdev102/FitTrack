@@ -250,8 +250,8 @@ export default function Home() {
             </div>
           </div>
           <div className="glass-panel rounded-lg p-6">
-            <div className="grid gap-4 md:grid-cols-2"><Input label={t('raw.name')} /><Input label={t('raw.email')} /></div>
-            <div className="mt-4"><Input label={t('raw.subject')} /></div>
+            <div className="grid gap-4 md:grid-cols-2"><Input label={t('raw.name')} labelClassName="text-slate-200" /><Input label={t('raw.email')} labelClassName="text-slate-200" /></div>
+            <div className="mt-4"><Input label={t('raw.subject')} labelClassName="text-slate-200" /></div>
             <label className="mt-4 grid gap-2 text-xs font-bold text-slate-200">{t('raw.message')}<textarea className="min-h-32 rounded border border-white/10 bg-white/10 px-3.5 py-3 text-sm text-white outline-none focus:border-primary focus:ring-4 focus:ring-primary/20" /></label>
             <Button className="mt-5">{t('raw.send_message')}</Button>
           </div>
